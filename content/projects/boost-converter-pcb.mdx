@@ -1,0 +1,101 @@
+---
+title: "Boost Converter PCB"
+date: "2026-03-09"
+description: "Design, simulation, and experimental verification of a DC-DC boost converter stepping 5V up to 12V using a 555 timer PWM signal and MOSFET switching."
+tags: ["PCB", "Power Electronics", "555 Timer", "KiCad", "MOSFET"]
+---
+
+## Overview
+
+This project involved the full design cycle of a DC-DC boost converter (also known as a step-up converter) capable of boosting a 5V input up to at least 12V across a specified load. The project spanned analytical calculations, KiCad simulation, PCB layout, physical assembly, and experimental verification.
+
+Key concepts applied include time-dependent behavior of reactive components, pulse-width modulation (PWM) generation using a 555 timer, and MOSFET switching characteristics.
+
+## Images
+
+<div className="my-8">
+  <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
+    <img
+      src="/Vout&pwm.png"
+      alt="Experimental waveforms showing PWM signal and output voltage"
+      className="h-auto w-full"
+    />
+    <div className="p-4 text-sm text-[#b8c2cf]">
+      Waveforms software capture showing the PWM signal and 12V output voltage from experimental verification
+    </div>
+  </div>
+  <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
+    <img
+      src="/BCSchematic.png"
+      alt="KiCad schematic for the boost converter"
+      className="h-auto w-full"
+    />
+    <div className="p-4 text-sm text-[#b8c2cf]">
+      KiCad schematic showing the 555 timer PWM stage, MOSFET switch, inductor, diode, and output filter capacitor
+    </div>
+  </div>
+  <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
+    <img
+      src="/BoostConverter.png"
+      alt="Assembled boost converter PCB"
+      className="h-auto w-full"
+    />
+    <div className="p-4 text-sm text-[#b8c2cf]">
+      Assembled PCB showing the manufactured and soldered boost converter circuit
+    </div>
+  </div>
+</div>
+
+## How It Works
+
+A boost converter stores energy in an inductor while a MOSFET switch is closed, then releases that energy to the output when the switch opens. By controlling the duty cycle of the PWM signal driving the MOSFET gate, the output voltage can be stepped up well above the input.
+
+The PWM signal was generated using a 555 timer configured as an astable multivibrator, with a target duty cycle in the 50-90% range at 500 Hz.
+
+## Key Technical Work
+
+### 1. Component Value Calculations
+
+**Timing resistors for the 555 timer (astable at 500 Hz):**
+
+The duty cycle is bounded by:
+
+- Lower bound: D = 0.5 (Ra = 0, 0.5 = Rb/2Rb and Rb cancels)
+- Upper bound: D = 0.9, which gives Rb 1250 ohms
+
+Closest kit value: R3 = 1200 ohms
+
+**Timing capacitor C2:**
+
+Using the astable period formula with f = 500 Hz:
+
+- Case 1 (Ra = 0): C = 1.2 uF
+- Case 2 (Ra = 10k): C = 0.23 uF
+
+Closest kit value in range: C2 = 0.47 uF
+
+**Output filter capacitor C3:**
+
+To maintain the output within 1% of 12V during the off-time, the minimum capacitance was calculated to be 60.33 uF.
+
+Closest available value in kit: C3 = 100 uF
+
+### 2. Inductor Energy Verification
+
+The inductor was verified to store sufficient energy during the on-time to power the converter. The energy stored was calculated as 113.6 uJ, exceeding the required 108 uJ and confirming the inductor selection was valid.
+
+### 3. KiCad Simulation
+
+Two transient simulations were run in KiCad using SPICE components:
+
+- **PWM verification:** Confirmed a stable square wave at approximately 85% duty cycle, within the 50-90% target range
+- **Output voltage verification:** Simulated output of 11.9V, within 1% of the 12V target
+
+### 4. Experimental Results
+
+After PCB fabrication and assembly, the board was tested with 5V and -5V supplies:
+
+- **Measured duty cycle:** 80.4%, within the 50-90% design range
+- **Measured output voltage:** approximately 12V, within 1% of target
+
+Small discrepancies between analytical, simulated, and experimental values are attributed to PCB trace resistance, component tolerances, and non-ideal 555 timer behavior.

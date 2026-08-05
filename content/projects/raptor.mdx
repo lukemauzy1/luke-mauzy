@@ -1,0 +1,162 @@
+---
+title: "RAPTOR: Recorded Audio Pitch Tracking and Optimal Retuning"
+description: "A from-scratch pitch correction engine built in Python using FFT, STFT, bandpass filtering, and cosine modulation — no Auto-Tune library required."
+date: "2026-01-01"
+tags: ["Python", "Signals", "Audio", "DSP", "Numpy", "Scipy"]
+---
+
+For our Signals and Systems final project, my team built **RAPTOR**: a pitch correction pipeline written entirely from scratch in Python. No Auto-Tune. No pitch-shifting libraries. Just signal processing fundamentals: FFT, STFT, filtering, and modulation.
+
+The pipeline takes a raw vocal `.wav` file and outputs a pitch-corrected version where every detected note is snapped to the nearest musical pitch in a chromatic scale.
+
+## Pipeline Overview
+
+1. Load a `.wav` file and plot the raw signal
+
+2. Compute the FFT to inspect the frequency content
+
+3. Apply a bandpass filter to isolate the vocal range and remove noise
+
+4. Use the STFT to detect pitch frame-by-frame over time
+
+5. Map each detected pitch to the nearest musical note
+
+6. Apply cosine modulation to shift each frame to its target pitch
+## Step 1: Loading the Audio
+
+The file is read with `scipy.io.wavfile`, normalized from 16-bit integers to a float range of -1 to 1, and collapsed from stereo to mono by averaging both channels:
+
+```python
+def read_wav(fname):
+    sample_rate, audio = wavfile.read(fname)
+    return sample_rate, audio / (2 ** 15)
+
+def to_mono(data):
+    if data.ndim == 1:
+        return data
+    return np.mean(data, axis=1)
+
+fs, audio = read_wav("pre_autotune.wav")
+audio = to_mono(audio)
+```
+
+## Step 2: FFT Frequency Domain Inspection
+
+Before any processing, the full FFT is computed to visualize where the vocal energy sits in the frequency spectrum:
+
+```python
+fft_magnitude = np.abs(np.fft.rfft(audio))
+fft_freqs = np.fft.rfftfreq(len(audio), d=1/fs)
+```
+
+This gives a global picture of the signal, useful for choosing appropriate bandpass cutoffs in the next step.
+
+## Step 3: Bandpass Filtering
+
+Rather than using a library filter, the bandpass is constructed from first principles using **convolution with a rectangular impulse response**, a moving average that acts as a low-pass filter. Subtracting two low-pass filters at different cutoffs yields a bandpass:
+
+```python
+def filter(signal, cutoff_freq):
+    length = int(fs / cutoff_freq)
+    impulse = np.ones(length) / length
+    return np.convolve(signal, impulse, mode='same')
+
+lowpass_filtered  = filter(audio, high_cutoff)
+highpass_filtered = filter(lowpass_filtered, low_cutoff)
+bandpass_filtered = lowpass_filtered - highpass_filtered
+```
+
+This cleanly isolates the vocal range while removing low-frequency rumble and high-frequency noise.
+
+## Step 4: Pitch Detection via STFT
+
+The Short-Time Fourier Transform slides a window across the signal and detects the **peak frequency** in each frame. A window size of `fs // 10` gives 10 Hz frequency resolution, with 87% overlap to catch rapid pitch changes without introducing crackling:
+
+```python
+window_size = fs // 10
+jump_size   = window_size // 8
+
+for i in range(num_windows):
+    start  = i * jump_size
+    window = bandpass_filtered[start : start + window_size]
+    fft    = np.abs(np.fft.rfft(window))
+    peak_freq = fft_freqs[np.argmax(fft)]
+    if low_cutoff <= peak_freq <= high_cutoff:
+        pitches[i] = peak_freq
+    times[i] = (start + window_size // 2) / fs
+```
+
+The result is a time-series of detected pitches, a frame-by-frame map of what note is being sung.
+
+## Step 5: Snapping to the Nearest Musical Note
+
+A chromatic scale is built across 4 octaves using the standard MIDI-to-frequency formula, anchored to A4 = 440 Hz. Each detected pitch is then snapped to whichever scale frequency is closest:
+
+```python
+scale = []
+for octave in range(4):
+    for semitone in range(12):
+        midi = 48 + (octave * 12) + semitone
+        scale.append(440 * (2 ** ((midi - 69) / 12)))
+scale = np.array(scale)
+
+for i in range(len(pitches)):
+    distances = np.abs(scale - pitches[i])
+    target_pitches[i] = scale[np.argmin(distances)]
+```
+
+## Step 6: Pitch Correction via Cosine Modulation
+
+This is the core of RAPTOR. For each STFT frame, the **frequency difference** between the detected pitch and its target is computed. A cosine tone at that difference frequency is multiplied with the audio frame, effectively shifting the pitch up or down by the required amount.
+
+A triangle-wave smoother is applied across each window to prevent discontinuities at frame boundaries from causing audible crackling:
+
+```python
+smoother = np.minimum(
+    np.linspace(0, 2, window_size),
+    np.linspace(2, 0, window_size)
+)
+
+for i in range(num_windows):
+    start = i * jump_size
+    end   = min(start + window_size, len(bandpass_filtered))
+    difference = target_pitches[i] - pitches[i]
+    correction_tone = np.cos(2 * np.pi * difference * signal_time[start:end])
+    smoothed_audio  = bandpass_filtered[start:end] * smoother[:end - start]
+    output[start:end] += np.real(smoothed_audio * correction_tone)
+
+output = output / np.max(np.abs(output))
+```
+
+No pitch-shifting library. No resampling. Just a cosine multiplied onto a windowed signal, modulation doing exactly what the theory says it should.
+
+## Results
+
+The pipeline successfully corrected pitch across a recorded vocal sample. Plotting detected pitch against target pitch showed clear snapping behavior, and the output audio was audibly in tune compared to the original.
+
+The graph below compares the **detected pitch** of the raw recorded audio against the **target scale note**
+that the pitch correction algorithm snapped each frame to.
+
+![Detected Pitch vs Target Scale Note](/RAPTORGraph.png)
+
+The blue line represents the raw detected pitch (Hz) extracted frame-by-frame using the STFT, while the
+orange line shows the nearest musical note the algorithm mapped each frame to. A few key observations:
+
+- **Tight alignment overall** — the orange target pitch closely follows the blue detected pitch across the
+  full 25-second recording, confirming the note-snapping logic is working correctly.
+- **Spike at ~0s** — an 860 Hz spike appears at the very start, likely caused by a transient noise burst
+  before the vocal signal stabilizes.
+- **Low-frequency dips** — several frames drop to near 0 Hz, indicating silent or unvoiced regions where
+  no pitch was detected.
+- **Smooth correction** — in regions of sustained notes (e.g. around 10–13s), the orange line holds steady
+  while the blue line fluctuates slightly, showing the correction actively stabilizing pitch.
+
+
+## Skills
+
+- **Digital Signal Processing** — FFT, STFT, convolution-based filtering, and spectral analysis
+- **Pitch Detection** — Frame-by-frame peak frequency extraction using sliding window STFT
+- **Audio Synthesis** — Cosine modulation for real-time pitch shifting without resampling
+- **Filter Design** — Bandpass construction from first principles using impulse response convolution
+- **Python / NumPy / SciPy** — Numerical signal processing and audio I/O
+- **Signal Theory** — Applied understanding of frequency-domain operations and windowing

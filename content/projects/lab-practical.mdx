@@ -1,0 +1,168 @@
+---
+title: "Staircase Wave Generator"
+description: "Designed and built an analog staircase wave generator using two 555 timers and two op-amps to produce a three-level stepped output waveform with a 1-second period, verified through simulation and physical circuit construction."
+date: "2026-08-03"
+tags:
+  - Analog Circuits
+  - 555 Timer
+  - Op-Amp
+  - KiCad
+  - Signal Generation
+  - Circuit Design
+coverImage: "/LPExperimental.png"
+summary: "An analog staircase wave generator built from two 555 timers and two op-amps, producing a three-step output waveform through astable multivibrator timing, one-shot triggering, voltage summing, and inversion — verified in simulation and hardware."
+---
+
+Designed and built an analog staircase wave generator using two 555 timers and two operational amplifiers to produce a three-level stepped output waveform with a 1-second period. The project covers circuit theory, component value calculations, KiCad schematic capture, SPICE simulation, and experimental hardware verification.
+
+## Project Overview
+
+The goal of this project was to generate a repeating staircase waveform, a signal that steps through three distinct voltage levels within each period, using only analog components. Rather than relying on a microcontroller or digital logic, the design achieves this purely through timed switching, voltage summing, and signal inversion.
+
+The final circuit produces a waveform that steps through three voltage levels every second: a high step for the first 0.33 seconds, a mid step from 0.33 to 0.67 seconds, and a low step for the final 0.33 seconds, before resetting and repeating.
+
+## Images
+
+<div className="my-8 space-y-8">
+  <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
+    <img
+      src="/LabPracticalSchematic.png"
+      alt="KiCad schematic for the staircase wave generator circuit"
+      className="h-auto w-full"
+    />
+    <div className="p-4 text-sm text-[#b8c2cf]">
+      KiCad schematic showing the two 555 timer stages, summing amplifier, and inverting amplifier
+    </div>
+  </div>
+
+  <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
+    <img
+      src="/LabPracticalCircuit.png"
+      alt="Physical circuit build of the staircase wave generator"
+      className="h-auto w-full"
+    />
+    <div className="p-4 text-sm text-[#b8c2cf]">
+      Physical breadboard implementation of the staircase wave generator
+    </div>
+  </div>
+
+  <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
+    <img
+      src="/LPExperimental.png"
+      alt="Oscilloscope capture of the staircase waveform output"
+      className="h-auto w-full"
+    />
+    <div className="p-4 text-sm text-[#b8c2cf]">
+      Oscilloscope capture of the experimental staircase waveform output
+    </div>
+  </div>
+</div>
+## Objectives
+
+- Generate a three-level staircase waveform using only analog components
+- Design and calculate component values for two 555 timer configurations from scratch
+- Use a summing amplifier to combine timed voltage signals into stepped output levels
+- Verify the design through KiCad schematic capture and SPICE simulation
+- Build and test the physical circuit and compare results against simulation
+
+## System Architecture
+
+The circuit is built from four stages chained together:
+
+- **Astable 555 Timer** — runs continuously as a multivibrator with a 67% duty cycle and a 1-second period, producing the primary timing signal
+- **Monostable 555 Timer** — triggered on the falling edge of the astable output, producing a 0.67-second one-shot pulse
+- **Summing Amplifier** — takes both 555 outputs as inputs and combines them with weighted resistor values to produce three distinct negative voltage levels
+- **Inverting Amplifier** — applies a gain of −1 to flip the summing amp's negative output into the final positive staircase waveform
+
+## How It Works
+
+### Timing Logic
+
+The astable 555 runs with a 67% duty cycle over a 1-second period. Its output is high for the first 0.67 seconds and low for the remaining 0.33 seconds. The monostable 555 is triggered on the falling edge of the astable output and stays high for 0.67 seconds.
+
+This creates three distinct time windows within each period.
+
+### Voltage Summing
+
+Both 555 outputs feed into a summing amplifier. The resistor values at each input are chosen to scale the 5 V signals down to specific weighted contributions:
+
+- The astable output is scaled to contribute −2 V
+- The monostable output is scaled to contribute −1 V
+
+This produces three summed output levels from the op-amp:
+
+- **−3 V** when both outputs are high (0 – 0.33 s)
+- **−2 V** when only the astable is high (0.33 – 0.67 s)
+- **-1 V** when both outputs are low (0.67 – 1.00 s)
+
+### Inversion
+
+The summing amplifier's negative output is passed through an inverting amplifier with a gain of −1, producing the final positive staircase output: **3 V → 2 V → 1 V**, repeating every second.
+
+## Key Technical Work
+
+### 1. Component Value Calculations
+
+Resistor and capacitor values for both 555 timers were derived analytically.
+
+For the astable multivibrator with a 67% duty cycle and 1-second period, setting RA = RB = R gives:
+
+- t_high = 0.693 × (RA + RB) × C = 0.693 × 2R × C = 0.667 s
+- t_low = 0.693 × RB × C = 0.693 × R × C = 0.333 s
+
+Choosing C = 4.7 µF gives R ≈ 102,340 Ω, implemented as 100kΩ + 2.2kΩ + 100 Ω resistors in series.
+
+For the monostable one-shot with a 0.67-second pulse width:
+
+- t = 1.1 × R × C = 0.67 s
+
+Choosing C = 4.7 µF gives R ≈ 129,570 Ω, implemented as 120kΩ + 8.2kΩ + 1.1kΩ + 180 Ω resistors in series.
+
+### 2. Summing Amplifier Design
+
+With a feedback resistor Rf = 1 kΩ, the input resistors were chosen to scale each 555 output to the correct voltage contribution:
+
+- To produce −2 V from a 5 V astable input: R1 = 2,500 Ω
+- To produce −1 V from a 5 V monostable input: R2 = 5,000 Ω
+
+This gives the three summed levels of −3 V, −2 V, and -1 V before inversion.
+### 3. Schematic Capture
+
+The full circuit was captured in KiCad, including both 555 timer stages, the summing amplifier, and the inverting amplifier. A transient simulation was run to verify the expected staircase waveform before physical construction.
+
+### 4. Hardware Build and Experimental Verification
+
+The circuit was built on a breadboard and the output was captured on an oscilloscope. The experimental waveform confirmed the three-step staircase shape repeating at a 1-second period.
+
+## Simulation vs. Experiment
+
+The simulated and experimental results were in close agreement, with one notable difference: real 555 timers do not output the full 5 V supply voltage at their output pin. This caused the measured step voltages to fall slightly short of the ideal 3 V and 2 V targets.
+
+This is expected behavior. Real-world components, resistors, capacitors, op-amps, and 555 timers, all carry tolerances of 1–5%, and the 555 output voltage drop under load is a well-documented characteristic. The deviation between simulation and experiment was reasonable and consistent with these non-ideal effects.
+
+## Tools and Methods
+
+- KiCad for schematic capture and SPICE transient simulation
+- Analytical calculations for 555 timer and op-amp component values
+- Breadboard construction for physical hardware verification
+- Oscilloscope for experimental waveform capture and analysis
+
+## Outcome
+
+Successfully designed, simulated, built, and verified an analog staircase wave generator producing a clean three-level stepped output at a 1-second period. The project demonstrates practical skills in:
+
+- Analog circuit design and timing analysis
+- 555 timer astable and monostable configuration
+- Op-amp summing and inverting amplifier design
+- Component value derivation from first principles
+- Schematic capture and SPICE simulation
+- Hardware build and experimental verification
+
+## Skills Demonstrated
+
+- Analog circuit design
+- 555 timer circuit configuration
+- Operational amplifier circuit design
+- KiCad schematic capture and simulation
+- Signal analysis and oscilloscope measurement
+- Simulation-to-hardware comparison and debugging

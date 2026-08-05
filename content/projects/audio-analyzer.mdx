@@ -1,0 +1,66 @@
+---
+title: "Electronic Audio Analyzer PCB"
+description: "A PCB that separates audio into high and low frequencies and drives LEDs in response built and tested with Dreams by Fleetwood Mac."
+date: "2026-05-01"
+tags: ["Electronics", "PCB", "Op-Amp", "Filters", "Audio"]
+---
+
+For our semester project in Electronics, we designed, built, and tested an analog audio analyzer circuit on a custom PCB. The goal: take a real audio signal, (I used *Dreams* by Fleetwood Mac) split it into high and low frequency bands, and drive two LEDs that respond to the energy in each band in real time.
+
+## System Overview
+
+The circuit takes a stereo audio input via a **3.5mm jack**, sums the channels through an **AC summing amplifier**, then routes the signal through two parallel filter paths. Each path feeds a **peak detector** and ultimately a **LED driver**: one for the lows, one for the highs.
+
+<img src="/AAFlowChart.png" alt="Audio Analyzer System Flowchart" className="rounded-lg my-8 w-full" />
+
+## Circuit Stages
+
+### Input & Power
+- Two **3.5mm audio jacks** wired in parallel (only one soldered) for flexibility — a splitter lets you monitor audio on speakers simultaneously
+- A **9V battery** feeds a **rail splitter**, creating symmetric ±4.5V rails (treated as ±4.5V / 0V for op-amp biasing)
+- A **PMOS polarity protection** transistor disconnects the board if the battery is inserted backwards
+
+### AC Summing Amplifier
+- Combines the left and right audio channels into a single mono signal
+- AC-coupled to block any DC offset from the source
+
+### Sallen-Key Low-Pass Filter
+- Second-order active filter passing the **bass frequencies** of the audio signal
+- Cutoff frequency selected to isolate the low-frequency content of the track (chosen as 250Hz)
+
+### Sallen-Key High-Pass Filter
+- Second-order active filter passing the **treble frequencies**
+- Cutoff frequency tuned to isolate the high frequency content (chosen as 700Hz)
+
+### Peak Detectors
+- One for each filter output (LP and HP)
+- Captures the **amplitude envelope** of each frequency band
+- DC blocking capacitors (C5, C11) and voltage dividers set the signal shift and threshold
+
+### LED Drivers
+Two different driver topologies were implemented for educational comparison:
+
+- **Analog LED Driver** — uses a MOSFET (Q2) biased by the peak detector output; the LED brightness scales continuously with signal amplitude
+- **PWM LED Driver** — compares the peak detector output against a **triangle-wave oscillator** to generate a PWM signal, switching the LED on/off at a duty cycle proportional to the audio energy
+
+## Schematic
+
+<img src="/AASchematic.png" alt="Audio Analyzer Full Schematic" className="rounded-lg my-8 w-full" />
+
+## How It Worked
+
+Playing *Dreams* by Fleetwood Mac through the circuit, the two LEDs visibly responded to the music:
+
+- The **low-frequency LED** pulsed with the kick drum and bass line
+- The **high-frequency LED** reacted to the vocals, hi-hats, and guitar
+
+The result was a real-time visual representation of the song's frequency content — exactly what the design intended.
+
+## Skills
+
+- **Active Filter Design** — Sallen-Key low-pass and high-pass topologies
+- **Op-Amp Circuits** — Summing amplifiers, peak detectors, and oscillators
+- **PCB Design & Assembly** — Custom board layout, soldering, and hardware debugging
+- **PWM Signal Generation** — Triangle-wave comparator-based LED driving
+- **Analog Circuit Analysis** — Biasing, AC coupling, and envelope detection
+- **Test & Measurement** — Oscilloscope probing and stage-by-stage circuit verification

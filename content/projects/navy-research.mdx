@@ -1,0 +1,98 @@
+---
+title: "U.S. Navy Affiliated Student Research"
+description: "A Python simulation to optimize a 3-stage missile booster system for maximum delta-V, comparing fully optimized and fixed first-stage burn designs."
+date: "2026-02-01"
+tags: ["Python", "Simulation", "Aerospace", "Optimization", "Research"]
+---
+
+As part of a U.S. Navy affiliated student research project, I developed a Python simulation to optimize a 3-stage missile booster system for maximum delta-V. The study compared two designs: a fully optimized rocket against one constrained to a fixed 10-second first-stage burn — reflecting a real tradeoff the Navy faces with shipboard gas management systems.
+
+## Client Problem
+
+The U.S. Navy seeks efficient missile launch systems that avoid large onboard gas management infrastructure. Popup boosters reduce exhaust complexity but may sacrifice performance. The goal was to quantify exactly how much performance is lost — and whether the tradeoff is worth it.
+
+## Approach
+
+The simulation was built using:
+
+- **Tsiolkovsky rocket equations** to model delta-V across each stage
+- **numpy** for numerical modeling of stage lengths and mass ratios
+- **scipy.optimize** to find optimal configurations within real physical constraints
+- A fixed total rocket length of **7.5 meters**, with structural and bulkhead constraints applied throughout
+
+Two rocket configurations were modeled and compared:
+
+- **Rocket 1** — Equal mass ratios across all three stages (fully optimized)
+- **Rocket 2** — Fixed 10-second first-stage burn, with the remaining stages optimized (popup booster simulation)
+
+## Core Simulation
+
+The heart of the simulation is an objective function that computes total delta-V across all three stages using the Tsiolkovsky rocket equation, then passes it to `scipy.optimize.minimize` to find the optimal stage lengths:
+
+```python
+def objective(lengths):
+    L1, L2, L3 = lengths
+    M_s = list(map(structure_mass, [L1, L2, L3]))
+    M_f = list(map(fuel_mass, [L1, L2, L3]))
+
+    M0_1 = sum(M_s + M_f) + 3 * bulkhead_mass + payload_mass
+    Mf_1 = M0_1 - M_f[0]
+    M0_2 = sum(M_s[1:] + M_f[1:]) + 2 * bulkhead_mass + payload_mass
+    Mf_2 = M0_2 - M_f[1]
+    M0_3 = M_s[2] + M_f[2] + bulkhead_mass + payload_mass
+    Mf_3 = M0_3 - M_f[2]
+
+    return -(Ve * (np.log(M0_1 / Mf_1) + np.log(M0_2 / Mf_2) + np.log(M0_3 / Mf_3)))
+```
+
+Each rocket design enforces a different set of equality constraints. Rocket 1 requires equal mass ratios across all stages, while Rocket 2 pins the first-stage mass ratio to match a fixed 10-second burn:
+
+```python
+# Rocket 1: equal mass ratios across all stages
+def equal_mass_ratio_constraint(L):
+    ...
+    return [MR1 - MR2, MR2 - MR3]
+
+# Rocket 2: fixed Stage 1 mass ratio
+required_mass_ratio_1st_stage = np.exp(T / (2 * Isp))
+
+def stage1_ratio_constraint(L):
+    ...
+    return (M0_1 / Mf_1) - required_mass_ratio_1st_stage
+```
+
+## Interactive Web App
+
+The simulation was also wrapped in a **Streamlit** web app, allowing users to adjust material properties and geometry in real time through a sidebar and instantly re-run the optimization:
+
+```python
+with st.sidebar:
+    st.header("Customization")
+    custom = st.checkbox("Enter custom dimensions and materials")
+
+    if custom:
+        ID = st.number_input("Inner Diameter (m)", value=ID)
+        rho_structure = st.number_input("Structure Density (kg/m³)", value=rho_structure)
+        rho_fuel = st.number_input("Propellant Density (kg/m³)", value=rho_fuel)
+        Isp = st.number_input("Specific Impulse (s)", value=Isp)
+        Bulkhead_density = st.number_input("Bulkhead Density (kg/m³)", value=Bulkhead_density)
+```
+
+## Results
+
+The simulation produced optimal stage lengths and delta-V distributions for both designs:
+
+- **Rocket 1** distributed performance evenly across all three stages
+- **Rocket 2** showed a significantly shorter first stage, with heavier reliance on stages 2 and 3
+- The delta-V difference between the two designs was **only 2.08%** — demonstrating that short-duration solid boosters result in only marginal efficiency losses compared to full gas management systems
+
+This finding supports the viability of popup booster designs as a practical simplification for Navy shipboard missile launchers without meaningful performance sacrifice.
+
+## Skills
+
+- **Python Simulation** — `scipy.optimize`, `numpy`, and custom constraint modeling
+- **Rocket Propulsion Theory** — Tsiolkovsky equations, staging, and mass ratio analysis
+- **Engineering Optimization** — Constrained multi-stage system design
+- **Data Visualization** — Stage length and delta-V comparison charts with `matplotlib`
+- **Web App Development** — Interactive parameter tuning via `Streamlit`
+- **Applied Research** — Translating a real client problem into a quantitative simulation

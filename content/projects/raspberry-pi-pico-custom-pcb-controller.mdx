@@ -1,0 +1,185 @@
+---
+title: "Raspberry Pi Pico-Based Custom PCB Handheld Pong Game (In Progress)"
+description: "Designed and developed a custom printed circuit board around the Raspberry Pi Pico to interface with a joystick module, SPI TFT display, and user input button for a compact embedded control application."
+date: "2026-08-05"
+tags:
+  - KiCad
+  - PCB Design
+  - Embedded Systems
+  - Raspberry Pi Pico
+  - SPI
+  - ADC
+coverImage: "/PongPCBFront.png"
+summary: "A custom Raspberry Pi Pico PCB integrating joystick, SPI TFT display, and button input with schematic capture, custom footprints, PCB layout, grounding strategy, and fabrication preparation."
+---
+
+Designed and developed a custom printed circuit board around the Raspberry Pi Pico to interface with a joystick module, SPI TFT display, and user input button for a compact embedded control application. The project includes hardware selection, pin mapping, schematic capture, custom footprint creation, PCB layout, grounding strategy, and preparation for fabrication.
+
+## Project Overview
+
+This project focused on designing a manufacturable custom PCB around the Raspberry Pi Pico rather than relying on breadboard wiring. The board integrates user input, analog sensing, and display output into a compact embedded platform while keeping future enclosure integration in mind.
+
+## Images
+
+<div className="my-8 space-y-8">
+  <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
+    <img
+      src="/PongSchematic.png"
+      alt="KiCad schematic for Raspberry Pi Pico custom PCB controller"
+      className="h-auto w-full"
+    />
+    <div className="p-4 text-sm text-[#b8c2cf]">
+      Schematic capture and signal mapping in KiCad
+    </div>
+  </div>
+
+  <div className="grid gap-6 md:grid-cols-2">
+    <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
+      <img
+        src="/PongPCBFront.png"
+        alt="Front PCB layout for Raspberry Pi Pico custom controller board"
+        className="h-auto w-full"
+      />
+      <div className="p-4 text-sm text-[#b8c2cf]">
+        Front-side PCB layout with joystick, display, and button placement
+      </div>
+    </div>
+
+    <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
+      <img
+        src="/PongPCBBack.png"
+        alt="Back PCB layout for Raspberry Pi Pico custom controller board"
+        className="h-auto w-full"
+      />
+      <div className="p-4 text-sm text-[#b8c2cf]">
+        Back-side PCB layout with Raspberry Pi Pico placement and routing
+      </div>
+    </div>
+  </div>
+</div>
+
+## Objectives
+
+- Integrate multiple input/output peripherals into a single embedded hardware platform
+- Create a manufacturable custom PCB rather than relying on breadboard wiring
+- Design with future enclosure integration in mind
+- Validate the design through electrical rule checks and PCB design rule checks
+
+## System Architecture
+
+The PCB was built around the Raspberry Pi Pico as the main microcontroller platform. Peripheral devices included:
+
+- 5-pin analog joystick module
+- 8-pin SPI TFT LCD
+- 4-pin tactile pushbutton
+- Power decoupling capacitors
+
+The design used the Pico's 3.3 V regulated output to power the joystick and display module, while analog joystick outputs were routed to the Pico's ADC pins and the display was interfaced over SPI.
+
+## Key Technical Work
+
+### 1. Hardware Interface Definition
+
+Mapped and validated signal assignments between the Pico and external modules, including:
+
+- analog joystick axes to ADC-capable GPIOs
+- joystick switch and external button to digital GPIO inputs
+- SPI display clock, data, chip select, reset, and data/command lines to appropriate GPIO pins
+
+A key design decision was distinguishing between SPI TFT labeling and I2C conventions, since the display's SCL and SDA pins represented SPI clock and MOSI, not I2C lines.
+
+### 2. Schematic Capture and Electrical Validation
+
+Created the full schematic in KiCad and resolved early issues involving:
+
+- unused and intentionally unconnected pins
+- power net naming consistency
+- correct use of pull-up logic for button inputs
+- proper power distribution from the Pico's 3.3 V rail
+
+Electrical Rule Check (ERC) was used to identify and resolve connection and net-labeling issues before layout.
+
+### 3. Custom Footprint Development
+
+Developed custom PCB footprints for the joystick and TFT modules based on measured pin geometry and standard through-hole spacing. This included:
+
+- defining pad sizes and drill diameters
+- setting correct pad pitch
+- marking pin 1 orientation clearly
+- verifying footprint pad numbering against schematic symbol pin numbering
+
+This was a critical part of the project because module-level hardware often lacks standardized footprints.
+
+### 4. PCB Layout and Layer Planning
+
+Designed a two-layer PCB in KiCad with:
+
+- Raspberry Pi Pico placed on the back side
+- display, joystick, and button placed on the front side
+
+This layout supported both compact routing and future enclosure integration. Mechanical considerations included:
+
+- display window alignment
+- joystick access and movement clearance
+- button accessibility through an enclosure using a plunger concept
+- USB cable keep-out and access for the Pico
+
+### 5. Power and Grounding Strategy
+
+Implemented a practical power-distribution strategy using:
+
+- 0.5 mm traces for 3.3 V power routing
+- 0.25 mm traces for signal routing
+- front and back copper pours for the ground network
+
+A key lesson from the layout phase was that shared net names alone do not guarantee physical connectivity between copper zones; plated through connections such as vias or through-hole pads are required to join front and back ground zones.
+
+### 6. Design Rule Check Resolution
+
+Ran PCB Design Rule Check (DRC) and resolved issues including:
+
+- unconnected track stubs
+- board-edge clearance violations
+- silkscreen overlap with board edge
+- incomplete thermal relief connections
+- missing connectivity between front and back ground zones
+- local ground-zone access issues around specific pads
+
+This process improved both manufacturability and confidence in the final board layout.
+
+## Engineering Considerations
+
+The project also included mechanical and product-design thinking beyond the PCB itself:
+
+- evaluating how component height differences affect enclosure design
+- identifying the need for a button plunger for short tact switches
+- planning for a screen bezel/window rather than a deeply recessed display opening
+- recognizing tradeoffs between always-on backlight wiring and future PWM-based backlight control
+
+## Tools and Methods
+
+- KiCad for schematic capture, footprint creation, PCB layout, DRC, and fabrication outputs
+- Manual pinout verification and footprint measurement
+- Gerber and drill file generation for manufacturing preparation
+
+## Outcome
+
+Produced a near-fabrication-ready custom PCB design that integrates user input, analog sensing, and display output into a compact embedded platform. The project demonstrates practical skills in:
+
+- embedded hardware design
+- schematic capture
+- custom footprint generation
+- PCB layout
+- grounding and power distribution
+- design-for-manufacture thinking
+- iterative debugging using ERC/DRC workflows
+
+## Skills Demonstrated
+
+- PCB design in KiCad
+- Embedded systems integration
+- Schematic development
+- Custom footprint creation
+- SPI and ADC peripheral interfacing
+- Electrical and mechanical design debugging
+- Hardware validation and manufacturing preparation
