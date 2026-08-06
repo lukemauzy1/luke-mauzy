@@ -9,6 +9,7 @@ export type ProjectMeta = {
   title: string;
   description?: string;
   date?: string;
+  publishedAt?: string;
 };
 
 export async function getProjectBySlug(slug: string): Promise<{
@@ -43,7 +44,6 @@ export async function getAllProjectsMeta(): Promise<ProjectMeta[]> {
       };
     })
     .sort(
-      (a, b) =>
-        new Date(b.date ?? 0).getTime() - new Date(a.date ?? 0).getTime()
+      (a, b) => new Date(b.date ?? 0).getTime() - new Date(a.date ?? 0).getTime()
     );
 }
