@@ -102,7 +102,6 @@ export default function AboutPage() {
             <ul className="grid grid-cols-2 gap-2 text-[#b8c2cf]">
               <li>Python</li>
               <li>Embedded C / C++</li>
-              <li>MATLAB</li>
               <li>TypeScript</li>
               <li>React / Next.js</li>
               <li>Git / GitHub</li>
@@ -125,7 +124,6 @@ export default function AboutPage() {
               <li>Arduino / ESP32</li>
               <li>Oscilloscopes</li>
               <li>3D Printing</li>
-              <li>Arduino</li>
               <li>Raspberry Pi</li>
             </ul>
           </div>
