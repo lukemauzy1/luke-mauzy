@@ -150,7 +150,7 @@ export default function AboutPage() {
           Contact
         </h2>
         <p className="mb-6 max-w-2xl leading-8 text-[#b8c2cf]">
-          If you want to talk about embedded systems, hardware, or why the Hoos
+          If you want to talk about embedded systems, hardware, or how the Hoos
           are winning March Madness this year, feel free to reach out.
         </p>
 

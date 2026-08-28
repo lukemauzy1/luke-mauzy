@@ -17,7 +17,7 @@ export default async function Home() {
         <HeroHeading />
 
         <p className="max-w-2xl text-lg leading-8 text-[#b8c2cf]">
-          Hi, I'm Luke, an EE student at UVA that design PCBs, write embedded firmware, and builds hardware that works.
+          Hi, I'm Luke, an EE student at UVA who design PCBs, write embedded firmware, and builds hardware that works.
         </p>
 
         <div className="mt-8 flex gap-4">
