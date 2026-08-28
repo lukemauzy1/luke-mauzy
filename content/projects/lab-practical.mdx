@@ -10,16 +10,21 @@ tags:
   - Signal Generation
   - Circuit Design
 coverImage: "/LPExperimental.png"
-summary: "An analog staircase wave generator built from two 555 timers and two op-amps, producing a three-step output waveform through astable multivibrator timing, one-shot triggering, voltage summing, and inversion — verified in simulation and hardware."
+summary: "An analog staircase wave generator built from two 555 timers and two op-amps, producing a three-step output waveform through astable multivibrator timing, one-shot triggering, voltage summing, and inversion, verified in simulation and hardware."
 ---
 
-Designed and built an analog staircase wave generator using two 555 timers and two operational amplifiers to produce a three-level stepped output waveform with a 1-second period. The project covers circuit theory, component value calculations, KiCad schematic capture, SPICE simulation, and experimental hardware verification.
+Designed, calculated, simulated, and built an analog staircase wave generator that produces a clean three-level stepped output at a 1-second period, with measured hardware results matching SPICE simulation within expected component tolerances. No microcontroller or digital logic involved: the entire waveform is generated through timed 555 switching, op-amp voltage summing, and signal inversion, derived from first-principles component calculations rather than trial and error. This kind of ground-up analog timing and signal-conditioning design is exactly the skill set behind real-world sensor conditioning and waveform-shaping circuits.
 
-## Project Overview
-
-The goal of this project was to generate a repeating staircase waveform, a signal that steps through three distinct voltage levels within each period, using only analog components. Rather than relying on a microcontroller or digital logic, the design achieves this purely through timed switching, voltage summing, and signal inversion.
-
-The final circuit produces a waveform that steps through three voltage levels every second: a high step for the first 0.33 seconds, a mid step from 0.33 to 0.67 seconds, and a low step for the final 0.33 seconds, before resetting and repeating.
+<div className="my-6 flex flex-wrap gap-2">
+  {["Analog Circuit Design", "555 Timer", "Op-Amp Design", "KiCad", "SPICE Simulation", "Oscilloscope Measurement", "Component Value Calculation", "Sim-to-Hardware Verification"].map((skill) => (
+    <span
+      key={skill}
+      className="rounded-full border border-[#22364d] bg-[#132235] px-3 py-1 text-xs font-medium text-[#b8c2cf]"
+    >
+      {skill}
+    </span>
+  ))}
+</div>
 
 ## Images
 
@@ -57,6 +62,13 @@ The final circuit produces a waveform that steps through three voltage levels ev
     </div>
   </div>
 </div>
+
+## Project Overview
+
+The goal of this project was to generate a repeating staircase waveform, a signal that steps through three distinct voltage levels within each period, using only analog components. Rather than relying on a microcontroller or digital logic, the design achieves this purely through timed switching, voltage summing, and signal inversion.
+
+The final circuit produces a waveform that steps through three voltage levels every second: a high step for the first 0.33 seconds, a mid step from 0.33 to 0.67 seconds, and a low step for the final 0.33 seconds, before resetting and repeating.
+
 ## Objectives
 
 - Generate a three-level staircase waveform using only analog components
@@ -69,10 +81,10 @@ The final circuit produces a waveform that steps through three voltage levels ev
 
 The circuit is built from four stages chained together:
 
-- **Astable 555 Timer** — runs continuously as a multivibrator with a 67% duty cycle and a 1-second period, producing the primary timing signal
-- **Monostable 555 Timer** — triggered on the falling edge of the astable output, producing a 0.67-second one-shot pulse
-- **Summing Amplifier** — takes both 555 outputs as inputs and combines them with weighted resistor values to produce three distinct negative voltage levels
-- **Inverting Amplifier** — applies a gain of −1 to flip the summing amp's negative output into the final positive staircase waveform
+- **Astable 555 Timer**: runs continuously as a multivibrator with a 67% duty cycle and a 1-second period, producing the primary timing signal
+- **Monostable 555 Timer**: triggered on the falling edge of the astable output, producing a 0.67-second one-shot pulse
+- **Summing Amplifier**: takes both 555 outputs as inputs and combines them with weighted resistor values to produce three distinct negative voltage levels
+- **Inverting Amplifier**: applies a gain of −1 to flip the summing amp's negative output into the final positive staircase waveform
 
 ## How It Works
 
@@ -126,6 +138,7 @@ With a feedback resistor Rf = 1 kΩ, the input resistors were chosen to scale ea
 - To produce −1 V from a 5 V monostable input: R2 = 5,000 Ω
 
 This gives the three summed levels of −3 V, −2 V, and -1 V before inversion.
+
 ### 3. Schematic Capture
 
 The full circuit was captured in KiCad, including both 555 timer stages, the summing amplifier, and the inverting amplifier. A transient simulation was run to verify the expected staircase waveform before physical construction.
@@ -149,20 +162,4 @@ This is expected behavior. Real-world components, resistors, capacitors, op-amps
 
 ## Outcome
 
-Successfully designed, simulated, built, and verified an analog staircase wave generator producing a clean three-level stepped output at a 1-second period. The project demonstrates practical skills in:
-
-- Analog circuit design and timing analysis
-- 555 timer astable and monostable configuration
-- Op-amp summing and inverting amplifier design
-- Component value derivation from first principles
-- Schematic capture and SPICE simulation
-- Hardware build and experimental verification
-
-## Skills Demonstrated
-
-- Analog circuit design
-- 555 timer circuit configuration
-- Operational amplifier circuit design
-- KiCad schematic capture and simulation
-- Signal analysis and oscilloscope measurement
-- Simulation-to-hardware comparison and debugging
+Successfully designed, simulated, built, and verified an analog staircase wave generator producing a clean three-level stepped output at a 1-second period, demonstrating practical skills in analog circuit design and timing analysis, 555 timer astable and monostable configuration, op-amp summing and inverting amplifier design, component value derivation from first principles, schematic capture and SPICE simulation, and hardware build and experimental verification.

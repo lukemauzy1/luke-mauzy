@@ -3,13 +3,21 @@ title: "Boost Converter PCB"
 date: "2026-03-09"
 description: "Design, simulation, and experimental verification of a DC-DC boost converter stepping 5V up to 12V using a 555 timer PWM signal and MOSFET switching."
 tags: ["PCB", "Power Electronics", "555 Timer", "KiCad", "MOSFET"]
+coverImage: "/BoostConverter.png"
 ---
 
-## Overview
+Team project: designed, simulated, fabricated, and tested a DC-DC boost converter that steps 5V up to a measured 12V output, within 1% of target and matching SPICE simulation to within a few percent. Every component value, timing resistors, capacitor, and inductor, was derived analytically first and validated against both simulation and a real assembled PCB, covering the full power electronics design cycle from calculation to manufactured hardware. My primary contributions were the PCB layout, the experimental verification phase, bringing up the assembled board and validating measured performance against the design targets on the oscilloscope, along with contributing to the analytical calculations and the project introduction and framing.
 
-This project involved the full design cycle of a DC-DC boost converter (also known as a step-up converter) capable of boosting a 5V input up to at least 12V across a specified load. The project spanned analytical calculations, KiCad simulation, PCB layout, physical assembly, and experimental verification.
-
-Key concepts applied include time-dependent behavior of reactive components, pulse-width modulation (PWM) generation using a 555 timer, and MOSFET switching characteristics.
+<div className="my-6 flex flex-wrap gap-2">
+  {["Power Electronics", "PCB Design", "555 Timer", "MOSFET Switching", "KiCad", "SPICE Simulation", "PWM Generation", "Hardware Verification"].map((skill) => (
+    <span
+      key={skill}
+      className="rounded-full border border-[#22364d] bg-[#132235] px-3 py-1 text-xs font-medium text-[#b8c2cf]"
+    >
+      {skill}
+    </span>
+  ))}
+</div>
 
 ## Images
 
@@ -46,6 +54,12 @@ Key concepts applied include time-dependent behavior of reactive components, pul
   </div>
 </div>
 
+## Overview
+
+This project involved the full design cycle of a DC-DC boost converter (also known as a step-up converter) capable of boosting a 5V input up to at least 12V across a specified load. The project spanned analytical calculations, KiCad simulation, PCB layout, physical assembly, and experimental verification.
+
+Key concepts applied include time-dependent behavior of reactive components, pulse-width modulation (PWM) generation using a 555 timer, and MOSFET switching characteristics.
+
 ## How It Works
 
 A boost converter stores energy in an inductor while a MOSFET switch is closed, then releases that energy to the output when the switch opens. By controlling the duty cycle of the PWM signal driving the MOSFET gate, the output voltage can be stepped up well above the input.
@@ -74,6 +88,12 @@ Using the astable period formula with f = 500 Hz:
 
 Closest kit value in range: C2 = 0.47 uF
 
+**Timing resistor RA:**
+
+Using the selected R3 = 1200 Ω and C2 = 0.47 µF to solve for RA to hit the 500 Hz target:
+
+RA = 6,140.4 − 2,400 = 3,740 Ω
+
 **Output filter capacitor C3:**
 
 To maintain the output within 1% of 12V during the off-time, the minimum capacitance was calculated to be 60.33 uF.
@@ -82,7 +102,9 @@ Closest available value in kit: C3 = 100 uF
 
 ### 2. Inductor Energy Verification
 
-The inductor was verified to store sufficient energy during the on-time to power the converter. The energy stored was calculated as 113.6 uJ, exceeding the required 108 uJ and confirming the inductor selection was valid.
+The inductor's internal resistance was first measured directly (RL = 53 Ω) rather than assumed ideal. That measured value fed into a KVL loop equation combining inductor voltage, MOSFET drain-source voltage, and internal resistance, which was solved as a differential equation for inductor current over the on-time to get a real, non-idealized current profile rather than a simplified estimate.
+
+Integrating that current profile gave an energy stored during the on-time of 113.6 µJ, exceeding the 108 µJ required by the load over one switching period and confirming the inductor selection was valid even after accounting for real winding resistance.
 
 ### 3. KiCad Simulation
 
@@ -99,3 +121,7 @@ After PCB fabrication and assembly, the board was tested with 5V and -5V supplie
 - **Measured output voltage:** approximately 12V, within 1% of target
 
 Small discrepancies between analytical, simulated, and experimental values are attributed to PCB trace resistance, component tolerances, and non-ideal 555 timer behavior.
+
+## Outcome
+
+As a team, delivered a manufactured and tested boost converter PCB that met its 12V design target within 1% error, with measured hardware results tracking closely to both hand calculations and SPICE simulation. My focus on the PCB layout and experimental verification phase, along with contributing to the analytical calculations, demonstrates practical skills in PCB design, component-value derivation, hardware bring-up, oscilloscope-based measurement, and simulation-to-hardware verification.

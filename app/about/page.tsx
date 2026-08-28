@@ -94,7 +94,7 @@ export default function AboutPage() {
         <h2 className="mb-6 text-2xl font-semibold text-[#f8f5f0]">
           Skills and tools
         </h2>
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
           <div className="rounded-2xl border border-[#22364d] bg-[#132235] p-6">
             <h3 className="mb-4 text-lg font-semibold text-[#f8f5f0]">
               Software
@@ -104,12 +104,26 @@ export default function AboutPage() {
               <li>Embedded C / C++</li>
               <li>TypeScript</li>
               <li>React / Next.js</li>
+              <li>ROS2</li>
               <li>Git / GitHub</li>
               <li>MATLAB</li>
               <li>SQL</li>
               <li>Fusion 360</li>
               <li>KiCad</li>
               <li>SPICE Simulation</li>
+              <li>VHDL</li>
+            </ul>
+          </div>
+
+          <div className="rounded-2xl border border-[#22364d] bg-[#132235] p-6">
+            <h3 className="mb-4 text-lg font-semibold text-[#f8f5f0]">
+              Protocols / Interfaces
+            </h3>
+            <ul className="grid grid-cols-2 gap-2 text-[#b8c2cf]">
+              <li>I2C</li>
+              <li>SPI</li>
+              <li>UART</li>
+              <li>ADC</li>
             </ul>
           </div>
 
@@ -125,6 +139,7 @@ export default function AboutPage() {
               <li>Oscilloscopes</li>
               <li>3D Printing</li>
               <li>Raspberry Pi</li>
+	      <li>GPIO</li>
             </ul>
           </div>
         </div>

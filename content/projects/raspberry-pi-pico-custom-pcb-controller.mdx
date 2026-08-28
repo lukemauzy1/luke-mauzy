@@ -13,11 +13,18 @@ coverImage: "/PongPCBFront.png"
 summary: "A custom Raspberry Pi Pico PCB integrating joystick, SPI TFT display, and button input with schematic capture, custom footprints, PCB layout, grounding strategy, and fabrication preparation."
 ---
 
-Designed and developed a custom printed circuit board around the Raspberry Pi Pico to interface with a joystick module, SPI TFT display, and user input button for a compact embedded control application. The project includes hardware selection, pin mapping, schematic capture, custom footprint creation, PCB layout, grounding strategy, and preparation for fabrication.
+Designed and laid out a two-layer custom PCB around the Raspberry Pi Pico that passed full ERC/DRC validation and is ready for fabrication, integrating a joystick, SPI TFT display, and button input into a single compact embedded platform. This mirrors the schematic-to-fabrication workflow used in production PCB design roles: hardware selection, pin mapping, schematic capture, custom footprint creation, layout, grounding strategy, and fab-file preparation, done end-to-end rather than on a breadboard.
 
-## Project Overview
-
-This project focused on designing a manufacturable custom PCB around the Raspberry Pi Pico rather than relying on breadboard wiring. The board integrates user input, analog sensing, and display output into a compact embedded platform while keeping future enclosure integration in mind.
+<div className="my-6 flex flex-wrap gap-2">
+  {["PCB Design", "KiCad", "SPI", "ADC", "Schematic Capture", "ERC/DRC", "Custom Footprints", "Power & Grounding"].map((skill) => (
+    <span
+      key={skill}
+      className="rounded-full border border-[#22364d] bg-[#132235] px-3 py-1 text-xs font-medium text-[#b8c2cf]"
+    >
+      {skill}
+    </span>
+  ))}
+</div>
 
 ## Images
 
@@ -117,12 +124,7 @@ Designed a two-layer PCB in KiCad with:
 - Raspberry Pi Pico placed on the back side
 - display, joystick, and button placed on the front side
 
-This layout supported both compact routing and future enclosure integration. Mechanical considerations included:
-
-- display window alignment
-- joystick access and movement clearance
-- button accessibility through an enclosure using a plunger concept
-- USB cable keep-out and access for the Pico
+This layout supported both compact routing and future enclosure integration. Mechanical considerations included display window alignment, joystick access clearance, button accessibility through an enclosure plunger concept, and USB cable keep-out for the Pico.
 
 ### 5. Power and Grounding Strategy
 
@@ -136,25 +138,7 @@ A key lesson from the layout phase was that shared net names alone do not guaran
 
 ### 6. Design Rule Check Resolution
 
-Ran PCB Design Rule Check (DRC) and resolved issues including:
-
-- unconnected track stubs
-- board-edge clearance violations
-- silkscreen overlap with board edge
-- incomplete thermal relief connections
-- missing connectivity between front and back ground zones
-- local ground-zone access issues around specific pads
-
-This process improved both manufacturability and confidence in the final board layout.
-
-## Engineering Considerations
-
-The project also included mechanical and product-design thinking beyond the PCB itself:
-
-- evaluating how component height differences affect enclosure design
-- identifying the need for a button plunger for short tact switches
-- planning for a screen bezel/window rather than a deeply recessed display opening
-- recognizing tradeoffs between always-on backlight wiring and future PWM-based backlight control
+Ran PCB Design Rule Check (DRC) and resolved issues spanning six categories: unconnected track stubs, board-edge clearance violations, silkscreen overlap with the board edge, incomplete thermal relief connections, missing connectivity between front and back ground zones, and local ground-zone access issues around specific pads. Working through each category end-to-end improved both manufacturability and confidence in the final layout.
 
 ## Tools and Methods
 
@@ -162,24 +146,18 @@ The project also included mechanical and product-design thinking beyond the PCB 
 - Manual pinout verification and footprint measurement
 - Gerber and drill file generation for manufacturing preparation
 
+## Challenges and Lessons Learned
+
+Bringing the board up in hardware surfaced problems that never show up in simulation or layout review. During assembly, excessive heat, pressure, and  repeated rework pulled solder pads off the board, lifting copper from the substrate and damaging the underlying traces. This forced a restart of the soldering process on a fresh board and led to ordering replacement Raspberry Pi Pico units after the originals were damaged during rework attempts.
+
+This reinforced a few practical lessons: use lower iron temperatures, apply less physical pressure to the pads, and avoid repeated reheating of the same pad It also highlighted the value of ordering spare components ahead of assembly rather than treating a single unit as sufficient for a first physical build.
+
+## What's Left to Do
+
+- **Soldering**: re-populate the board on a fresh PCB using revised technique (lower iron temperature, shorter dwell time) to avoid further pad lift
+- **Enclosure CAD**: design and model a 3D-printable enclosure in Fusion 360, accounting for the display window, joystick clearance, and button plunger identified during layout
+- **Game code**: write the embedded MicroPython firmware for the Pong game logic, including joystick input handling, collision detection, and SPI-driven rendering to the TFT display
+
 ## Outcome
 
-Produced a near-fabrication-ready custom PCB design that integrates user input, analog sensing, and display output into a compact embedded platform. The project demonstrates practical skills in:
-
-- embedded hardware design
-- schematic capture
-- custom footprint generation
-- PCB layout
-- grounding and power distribution
-- design-for-manufacture thinking
-- iterative debugging using ERC/DRC workflows
-
-## Skills Demonstrated
-
-- PCB design in KiCad
-- Embedded systems integration
-- Schematic development
-- Custom footprint creation
-- SPI and ADC peripheral interfacing
-- Electrical and mechanical design debugging
-- Hardware validation and manufacturing preparation
+Produced a near-fabrication-ready custom PCB design that integrates user input, analog sensing, and display output into a compact embedded platform, demonstrating practical skills in embedded hardware design, schematic capture, custom footprint generation, PCB layout, grounding and power distribution, design-for-manufacture thinking, and iterative debugging using ERC/DRC workflows.

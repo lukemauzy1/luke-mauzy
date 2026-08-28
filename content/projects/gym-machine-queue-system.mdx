@@ -15,15 +15,18 @@ coverImage: "/FinalPhoto.jpeg"
 summary: "A hardware-light gym queue system using Heltec ESP32 boards, NFC tap-to-join, a live WiFi dashboard, OLED session display, physical button confirmation, and flash-based session logging."
 ---
 
-Designed and built a low-cost queue management system for gym equipment using paired Heltec ESP32 boards, NFC-based check-in, a browser-hosted live dashboard, and embedded session tracking with flash storage logging.
+Built a working end-to-end IoT queue management system for gym equipment: tap-to-join NFC check-in, a live browser dashboard, on-device session timing, and flash-based logging, running entirely on two paired ESP32 boards with no app install required. This demonstrates a full embedded product loop: hardware design, on-device networking, real-time state synchronization between devices, and a physical user interface, the kind of end-to-end IoT system design used in production embedded/IoT roles.
 
-## Project Overview
-
-Gym equipment at busy recreation centers often turns into a waiting game: people hover near machines unsure when they'll be free, there's no clear visibility into wait times, and no practical way to plan or reserve equipment in advance.
-
-This system addresses that by adding a lightweight queue management layer directly onto each machine. Every piece of equipment is paired with a Heltec V3 board acting as the local controller, and an nRF loop antenna that enables simple NFC-based check-in. A second Heltec unit acts as the server, running a minimal web interface over a local WiFi network.
-
-When a user taps their phone to the antenna, a browser page automatically opens (e.g. `machine1.local`). From there, they enter their name or ID and specify workout parameters like sets, reps, or duration before joining the queue. The goal is a no-app, hardware-light system that turns unstructured gym congestion into a coordinated, transparent experience.
+<div className="my-6 flex flex-wrap gap-2">
+  {["ESP32 / Heltec V3", "C++ / Arduino", "Embedded Web Server", "NFC", "WiFi Networking", "OLED UI", "Flash Storage", "Real-Time Device Sync"].map((skill) => (
+    <span
+      key={skill}
+      className="rounded-full border border-[#22364d] bg-[#132235] px-3 py-1 text-xs font-medium text-[#b8c2cf]"
+    >
+      {skill}
+    </span>
+  ))}
+</div>
 
 ## Images
 
@@ -40,6 +43,14 @@ When a user taps their phone to the antenna, a browser page automatically opens 
   </div>
 </div>
 
+## Project Overview
+
+Gym equipment at busy recreation centers often turns into a waiting game: people hover near machines unsure when they'll be free, there's no clear visibility into wait times, and no practical way to plan or reserve equipment in advance.
+
+This system addresses that by adding a lightweight queue management layer directly onto each machine. Every piece of equipment is paired with a Heltec V3 board acting as the local controller, and an nRF loop antenna that enables simple NFC-based check-in. A second Heltec unit acts as the server, running a minimal web interface over a local WiFi network.
+
+When a user taps their phone to the antenna, a browser page automatically opens (e.g. `machine1.local`). From there, they enter their name or ID and specify workout parameters like sets, reps, or duration before joining the queue. The goal is a no-app, hardware-light system that turns unstructured gym congestion into a coordinated, transparent experience.
+
 ## Objectives
 
 - Eliminate passive hovering and uncertainty around gym equipment availability
@@ -52,16 +63,16 @@ When a user taps their phone to the antenna, a browser page automatically opens 
 
 The system is split across two Heltec V3 ESP32 boards:
 
-- **Server Heltec** — hosts the web server over local WiFi, manages the queue, serves the dashboard, and handles all session state logic
-- **Client Heltec** — mounted on the machine, drives the OLED display, reads the physical confirm button, and communicates session state to the server over WiFi
+- **Server Heltec**: hosts the web server over local WiFi, manages the queue, serves the dashboard, and handles all session state logic
+- **Client Heltec**: mounted on the machine, drives the OLED display, reads the physical confirm button, and communicates session state to the server over WiFi
 
-An nRF loop antenna connected to the client unit acts as a stand-in for an NFC sticker. When a user taps their phone, the phone opens `http://machine1.local/queue` automatically — no app, no pairing required.
+An nRF loop antenna connected to the client unit acts as a stand-in for an NFC sticker. When a user taps their phone, the phone opens `http://machine1.local/queue` automatically, no app, no pairing required.
 
-## How It Works — UX Flow
+## How It Works: UX Flow
 
 ### 1. Join the Queue
 
-The user taps their phone on the nRF loop antenna. Their browser automatically opens `http://machine1.local/queue`, a web server hosted by the server Heltec. The user enters their name or student ID, inputs their desired sets, reps, or miles, and joins the queue — all from their phone.
+The user taps their phone on the nRF loop antenna. Their browser automatically opens `http://machine1.local/queue`, a web server hosted by the server Heltec. The user enters their name or student ID, inputs their desired sets, reps, or miles, and joins the queue, all from their phone.
 
 ### 2. Queue View
 
@@ -79,10 +90,10 @@ The timer counts down on the Heltec OLED. The display shows the current user, ti
 
 There are two ways a session can end:
 
-- **Timer hits zero** — ends automatically
-- **User presses the confirm button** — ends immediately, marked as ended early
+- **Timer hits zero**: ends automatically
+- **User presses the confirm button**: ends immediately, marked as ended early
 
-Either way, the next person in queue is promoted and the Heltec logs the session summary — duration, completion status, and timestamp — to flash storage.
+Either way, the next person in queue is promoted and the Heltec logs the session summary, duration, completion status, and timestamp, to flash storage.
 
 ## OLED Display States
 
@@ -99,15 +110,16 @@ A session is in progress. The display shows a large countdown timer, the current
 
 ### Ended:
 The session has finished. The display briefly shows either `TIME'S UP!` or `ENDED EARLY` alongside a thank-you message with the user's name before returning to idle.
+
 ## Key Technical Work
 
 ### 1. NFC-Based Tap-to-Join
 
-Used an nRF loop antenna as a stand-in for a commercial NFC sticker. When a phone taps the antenna, it triggers the phone's browser to open the machine's local URL automatically — no app install, no Bluetooth pairing, no QR scan required.
+Used an nRF loop antenna as a stand-in for a commercial NFC sticker. When a phone taps the antenna, it triggers the phone's browser to open the machine's local URL automatically, no app install, no Bluetooth pairing, no QR scan required.
 
 ### 2. Embedded Web Server
 
-The server Heltec runs a lightweight HTTP web server over local WiFi. It serves the queue join form and live dashboard, handles form submissions, manages queue state, and pushes live updates to connected clients — all from an ESP32.
+The server Heltec runs a lightweight HTTP web server over local WiFi. It serves the queue join form and live dashboard, handles form submissions, manages queue state, and pushes live updates to connected clients, all from an ESP32.
 
 ### 3. Live Dashboard
 
@@ -115,7 +127,7 @@ The browser-based dashboard updates in real time as queue state changes. Users c
 
 ### 4. Physical Button Confirmation
 
-A physical tactile button on the Client Heltec serves as the session confirm and early-end control. This keeps the interaction grounded in hardware — the user must be physically present at the machine to start or end a session, preventing remote queue manipulation.
+A physical tactile button on the Client Heltec serves as the session confirm and early-end control. This keeps the interaction grounded in hardware: the user must be physically present at the machine to start or end a session, preventing remote queue manipulation.
 
 ### 5. Flash Storage Logging
 
@@ -129,9 +141,9 @@ The client and server Heltec units communicate continuously over WiFi. Session s
 
 The system is designed to scale into a full facility-wide coordination platform:
 
-- **Centralized gym dashboard** — a real-time overview of all machines showing queue lengths, estimated availability, and utilization across the entire space, helping users make informed decisions before walking to a machine
-- **Personal workout tracking** — each session could automatically sync to a user's profile, building a structured workout history including completed sets, timing, and equipment usage frequency
-- **Personalized recommendations** — over time, session data could support workout planning, progress tracking, and usage-based suggestions
+- **Centralized gym dashboard**: a real-time overview of all machines showing queue lengths, estimated availability, and utilization across the entire space, helping users make informed decisions before walking to a machine
+- **Personal workout tracking**: each session could automatically sync to a user's profile, building a structured workout history including completed sets, timing, and equipment usage frequency
+- **Personalized recommendations**: over time, session data could support workout planning, progress tracking, and usage-based suggestions
 
 ## Tools and Methods
 
@@ -145,22 +157,4 @@ The system is designed to scale into a full facility-wide coordination platform:
 
 ## Outcome
 
-Delivered a working end-to-end queue management system that eliminates passive hovering, provides live wait-time visibility, and logs session data — all without requiring any app installation. The project demonstrates practical skills in:
-
-- Embedded systems design and firmware development
-- IoT networking and on-device web hosting
-- Real-time browser-based UI over WiFi
-- Hardware-software integration with physical controls
-- UX flow design for embedded systems
-- Data logging to flash storage
-
-## Skills Demonstrated
-
-- ESP32 / Heltec V3 embedded development
-- IoT system architecture
-- On-device HTTP web server implementation
-- NFC-based user interaction design
-- OLED display state management
-- Real-time WiFi communication between embedded devices
-- Flash storage logging
-- Embedded UX and physical interface design
+Delivered a working end-to-end queue management system that eliminates passive hovering, provides live wait-time visibility, and logs session data, all without requiring any app installation, demonstrating practical skills in embedded systems design and firmware development, IoT networking and on-device web hosting, real-time browser-based UI over WiFi, hardware-software integration with physical controls, UX flow design for embedded systems, and data logging to flash storage.

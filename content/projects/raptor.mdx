@@ -1,13 +1,22 @@
 ---
 title: "RAPTOR: Recorded Audio Pitch Tracking and Optimal Retuning"
-description: "A from-scratch pitch correction engine built in Python using FFT, STFT, bandpass filtering, and cosine modulation — no Auto-Tune library required."
+description: "A from-scratch pitch correction engine built in Python using FFT, STFT, bandpass filtering, and cosine modulation, no Auto-Tune library required."
 date: "2026-01-01"
 tags: ["Python", "Signals", "Audio", "DSP", "Numpy", "Scipy"]
 ---
 
-For our Signals and Systems final project, my team built **RAPTOR**: a pitch correction pipeline written entirely from scratch in Python. No Auto-Tune. No pitch-shifting libraries. Just signal processing fundamentals: FFT, STFT, filtering, and modulation.
+Team project: built RAPTOR from scratch for our Signals and Systems final, a full pitch correction pipeline in Python with no Auto-Tune or pitch-shifting library involved. The pipeline takes a raw vocal `.wav` file and outputs a pitch-corrected version where every detected note is snapped to the nearest musical pitch in a chromatic scale, verified against the original recording with visibly clean note-snapping behavior across a full 25-second sample. Every stage, filtering, pitch detection, and pitch shifting, is implemented from first principles: FFT, STFT, convolution-based filtering, and cosine modulation.
 
-The pipeline takes a raw vocal `.wav` file and outputs a pitch-corrected version where every detected note is snapped to the nearest musical pitch in a chromatic scale.
+<div className="my-6 flex flex-wrap gap-2">
+  {["Digital Signal Processing", "FFT / STFT", "Filter Design", "Python", "NumPy / SciPy", "Pitch Detection", "Audio Synthesis", "Signal Theory"].map((skill) => (
+    <span
+      key={skill}
+      className="rounded-full border border-[#22364d] bg-[#132235] px-3 py-1 text-xs font-medium text-[#b8c2cf]"
+    >
+      {skill}
+    </span>
+  ))}
+</div>
 
 ## Pipeline Overview
 
@@ -22,6 +31,7 @@ The pipeline takes a raw vocal `.wav` file and outputs a pitch-corrected version
 5. Map each detected pitch to the nearest musical note
 
 6. Apply cosine modulation to shift each frame to its target pitch
+
 ## Step 1: Loading the Audio
 
 The file is read with `scipy.io.wavfile`, normalized from 16-bit integers to a float range of -1 to 1, and collapsed from stereo to mono by averaging both channels:
@@ -134,29 +144,22 @@ No pitch-shifting library. No resampling. Just a cosine multiplied onto a window
 
 The pipeline successfully corrected pitch across a recorded vocal sample. Plotting detected pitch against target pitch showed clear snapping behavior, and the output audio was audibly in tune compared to the original.
 
-The graph below compares the **detected pitch** of the raw recorded audio against the **target scale note**
-that the pitch correction algorithm snapped each frame to.
+The graph below compares the **detected pitch** of the raw recorded audio against the **target scale note** that the pitch correction algorithm snapped each frame to.
 
 ![Detected Pitch vs Target Scale Note](/RAPTORGraph.png)
 
-The blue line represents the raw detected pitch (Hz) extracted frame-by-frame using the STFT, while the
-orange line shows the nearest musical note the algorithm mapped each frame to. A few key observations:
+The blue line represents the raw detected pitch (Hz) extracted frame-by-frame using the STFT, while the orange line shows the nearest musical note the algorithm mapped each frame to. A few key observations:
 
-- **Tight alignment overall** — the orange target pitch closely follows the blue detected pitch across the
-  full 25-second recording, confirming the note-snapping logic is working correctly.
-- **Spike at ~0s** — an 860 Hz spike appears at the very start, likely caused by a transient noise burst
-  before the vocal signal stabilizes.
-- **Low-frequency dips** — several frames drop to near 0 Hz, indicating silent or unvoiced regions where
-  no pitch was detected.
-- **Smooth correction** — in regions of sustained notes (e.g. around 10–13s), the orange line holds steady
-  while the blue line fluctuates slightly, showing the correction actively stabilizing pitch.
-
+- **Tight alignment overall**: the orange target pitch closely follows the blue detected pitch across the full 25-second recording, confirming the note-snapping logic is working correctly.
+- **Spike at ~0s**: an 860 Hz spike appears at the very start, likely caused by a transient noise burst before the vocal signal stabilizes.
+- **Low-frequency dips**: several frames drop to near 0 Hz, indicating silent or unvoiced regions where no pitch was detected.
+- **Smooth correction**: in regions of sustained notes (e.g. around 10-13s), the orange line holds steady while the blue line fluctuates slightly, showing the correction actively stabilizing pitch.
 
 ## Skills
 
-- **Digital Signal Processing** — FFT, STFT, convolution-based filtering, and spectral analysis
-- **Pitch Detection** — Frame-by-frame peak frequency extraction using sliding window STFT
-- **Audio Synthesis** — Cosine modulation for real-time pitch shifting without resampling
-- **Filter Design** — Bandpass construction from first principles using impulse response convolution
-- **Python / NumPy / SciPy** — Numerical signal processing and audio I/O
-- **Signal Theory** — Applied understanding of frequency-domain operations and windowing
+- **Digital Signal Processing**: FFT, STFT, convolution-based filtering, and spectral analysis
+- **Pitch Detection**: frame-by-frame peak frequency extraction using sliding window STFT
+- **Audio Synthesis**: cosine modulation for real-time pitch shifting without resampling
+- **Filter Design**: bandpass construction from first principles using impulse response convolution
+- **Python / NumPy / SciPy**: numerical signal processing and audio I/O
+- **Signal Theory**: applied understanding of frequency-domain operations and windowing
