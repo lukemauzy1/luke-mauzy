@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Luke | Portfolio",
-  description: "Personal portfolio built with Next.js",
+  title: "Luke Mauzy | Portfolio",
+  description: "Electrical engineer building at the intersection of hardware, analog circuits, and embedded systems.",
 };
 
 export default function RootLayout({
@@ -27,44 +27,64 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased bg-[#0b1622] text-[#f8f5f0]`}
+        className={`${geistSans.variable} ${geistMono.variable} noise grid-bg min-h-screen antialiased`}
       >
-        <header className="sticky top-0 z-50 border-b border-[#22364d] bg-[#0b1622]/90 backdrop-blur">
-          <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-5">
-            <Link href="/" className="transition hover:opacity-80">
-              <Image
-                src="/logo.png"
-                alt="Luke logo"
-                width={40}
-                height={40}
-                priority
-              />
+        <header className="fixed top-0 z-50 w-full border-b border-border-subtle bg-bg/80 backdrop-blur-xl">
+          <nav className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+            <Link href="/" className="group flex items-center gap-3 transition-opacity hover:opacity-80">
+              <div className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-border-subtle bg-bg-card transition-colors group-hover:border-accent/30">
+                <Image
+                  src="/logo.png"
+                  alt="LM"
+                  width={28}
+                  height={28}
+                  priority
+                  className="rounded"
+                />
+              </div>
+              <span className="text-sm font-semibold tracking-tight text-text">
+                Luke Mauzy
+              </span>
             </Link>
 
-            <div className="flex gap-8 text-sm font-medium text-[#b8c2cf]">
-              <Link href="/" className="transition hover:text-[#e57200]">
+            <div className="flex items-center gap-1">
+              <Link
+                href="/"
+                className="link-underline rounded-lg px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-text"
+              >
                 Home
               </Link>
-              <Link href="/about" className="transition hover:text-[#e57200]">
+              <Link
+                href="/about"
+                className="link-underline rounded-lg px-3 py-2 text-sm font-medium text-text-secondary transition-colors hover:text-text"
+              >
                 About
               </Link>
             </div>
           </nav>
         </header>
 
-        <div className="min-h-[calc(100vh-140px)]">{children}</div>
+        <div className="pt-[73px]">{children}</div>
 
-        <footer className="mt-20 border-t border-[#22364d]">
-          <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-8 text-sm text-[#b8c2cf]">
-            <p>© {new Date().getFullYear()} Luke Mauzy</p>
-            <div className="flex gap-6">
+        <footer className="border-t border-border-subtle">
+          <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-10">
+            <p className="text-sm text-text-muted">
+              &copy; {new Date().getFullYear()} Luke Mauzy
+            </p>
+            <div className="flex items-center gap-1">
               <a
                 href="https://www.linkedin.com/in/luke-mauzy-80b922326/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="transition hover:text-[#e57200]"
+                className="rounded-lg px-3 py-2 text-sm text-text-muted transition-colors hover:text-text"
               >
                 LinkedIn
+              </a>
+              <a
+                href="mailto:lmauzy44@gmail.com"
+                className="rounded-lg px-3 py-2 text-sm text-text-muted transition-colors hover:text-text"
+              >
+                Email
               </a>
             </div>
           </div>

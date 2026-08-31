@@ -17,10 +17,10 @@ export function MarkerHighlight({
       transition={{ duration: 1.1, ease: "easeInOut", delay }}
       className="
         inline
-        bg-[linear-gradient(to_right,rgba(229,114,0,0.32),rgba(229,114,0,0.32))]
+        bg-[linear-gradient(to_right,rgba(249,115,22,0.3),rgba(249,115,22,0.3))]
         bg-no-repeat
         [background-position:0_88%]
-        text-[#f8f5f0]
+        text-text
         [box-decoration-break:clone]
         [-webkit-box-decoration-break:clone]
         px-[0.04em]

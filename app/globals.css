@@ -1,11 +1,210 @@
 @import "tailwindcss";
 
+@theme {
+  --color-bg: #06090f;
+  --color-bg-elevated: #0d1117;
+  --color-bg-card: #111820;
+  --color-bg-glass: rgba(13, 17, 23, 0.6);
+  --color-border: #1e293b;
+  --color-border-subtle: #162032;
+  --color-accent: #f97316;
+  --color-accent-light: #fb923c;
+  --color-accent-dim: rgba(249, 115, 22, 0.12);
+  --color-text: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #475569;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: #0b1622;
-  color: #f8f5f0;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  overflow-x: hidden;
 }
 
+::selection {
+  background: rgba(249, 115, 22, 0.3);
+  color: #fff;
+}
+
+/* ── Grid background ── */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(249, 115, 22, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249, 115, 22, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* ── Noise texture overlay ── */
+.noise::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* ── Gradient orb ── */
+@keyframes orb-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -20px) scale(1.05); }
+  50% { transform: translate(-10px, 15px) scale(0.95); }
+  75% { transform: translate(-30px, -10px) scale(1.02); }
+}
+
+.gradient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  animation: orb-float 20s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* ── Glass card ── */
+.glass {
+  background: var(--color-bg-glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border-subtle);
+}
+
+.glass:hover {
+  border-color: rgba(249, 115, 22, 0.2);
+  background: rgba(13, 17, 23, 0.8);
+}
+
+/* ── Glow effect ── */
+.glow {
+  box-shadow:
+    0 0 0 1px rgba(249, 115, 22, 0.1),
+    0 0 20px -5px rgba(249, 115, 22, 0.1);
+}
+
+.glow:hover {
+  box-shadow:
+    0 0 0 1px rgba(249, 115, 22, 0.25),
+    0 0 40px -10px rgba(249, 115, 22, 0.2);
+}
+
+/* ── Animated underline ── */
+.link-underline {
+  position: relative;
+}
+.link-underline::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 1.5px;
+  background: var(--color-accent);
+  transition: width 0.3s ease;
+}
+.link-underline:hover::after {
+  width: 100%;
+}
+
+/* ── Stagger fade in ── */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* ── Prose styling for project pages ── */
+.prose-custom h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  letter-spacing: -0.02em;
+}
+
+.prose-custom h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.prose-custom p {
+  margin-bottom: 1rem;
+  line-height: 1.75;
+  color: #94a3b8;
+}
+
+.prose-custom ul {
+  margin-bottom: 1rem;
+  margin-left: 1.5rem;
+  list-style-type: disc;
+}
+
+.prose-custom li {
+  line-height: 1.75;
+  color: #94a3b8;
+}
+
+.prose-custom strong {
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.prose-custom code {
+  background: rgba(249, 115, 22, 0.08);
+  border: 1px solid rgba(249, 115, 22, 0.15);
+  border-radius: 6px;
+  padding: 0.15em 0.4em;
+  font-size: 0.875em;
+  color: #fb923c;
+}
+
+.prose-custom pre {
+  margin: 1.5rem 0;
+  padding: 1.25rem;
+  border-radius: 12px;
+  background: #0d1117 !important;
+  border: 1px solid var(--color-border);
+  overflow-x: auto;
+}
+
+.prose-custom pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #e2e8f0;
+  font-size: 0.85rem;
+  line-height: 1.7;
+}
+
+.prose-custom img {
+  margin: 1.5rem 0;
+  border-radius: 12px;
+  border: 1px solid var(--color-border);
+}
+
+.prose-custom blockquote {
+  margin: 1.5rem 0;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-accent-dim);
+  border-radius: 0 8px 8px 0;
+  color: #cbd5e1;
+}
