@@ -125,7 +125,6 @@ The software goal is a small handheld console: the microSD card holds a library 
 - `/games/` at the SD root, with one folder per game (e.g. `/games/pong/`, `/games/snake/`, `/games/breakout/`)
 - each game folder carries a small metadata file (title, author, and version) plus its assets and code
 - the launcher scans `/games/`, renders the titles as a menu on the ILI9341, and lets the joystick/buttons navigate and confirm a selection
-- Pong ships first as the flagship title, with the menu/game state machine and AI from the original firmware refactored into this framework
 
 Keeping games as separate SD folders means new titles can be dropped onto the card without reflashing the firmware.
 
@@ -142,8 +141,6 @@ Mapped and validated signal assignments between the Pico and every external modu
 - charging and power-management signals from the BQ24075
 
 Because the Pico sits on the back while everything else lives on the front, most SPI signals route through vias. Signal integrity is handled in code rather than with added hardware: GPIO drive strength is kept at 2-4 mA (default rather than boosting to 8/12 mA) to soften edge rates and avoid ringing across via jumps, the SPI clock stays at or below 25 MHz, and traces take the shortest direct path between Pico pins and each peripheral.
-
-A key design decision was distinguishing between SPI TFT labeling and I2C conventions, since the display's SCL and SDA pins represented SPI clock and MOSI, not I2C lines.
 
 ### 2. Battery Charging and Power Management
 
