@@ -1,22 +1,25 @@
 ---
-title: "Raspberry Pi Pico-Based Custom PCB Handheld Pong Game (In Progress)"
-description: "Designed and developed a custom printed circuit board around the Raspberry Pi Pico to interface with a joystick module, SPI TFT display, and user input button for a compact embedded control application."
-date: "2026-08-05"
+title: "Raspberry Pi Pico-Based Handheld Game Console (In Progress)"
+description: "A redesigned two-layer Raspberry Pi Pico handheld console that runs multiple games from a 32 GB microSD card, with battery operation via a BQ24075 Li-ion charger, a vibration motor, a power switch, and additional buttons alongside a 3.2\" ILI9341 touch display, joystick, and buzzer."
+date: "2026-09-24"
 tags:
   - KiCad
   - PCB Design
   - Embedded Systems
   - Raspberry Pi Pico
+  - Battery Management
+  - SD Card
+  - ILI9341
   - SPI
   - ADC
 coverImage: "/PongPCBFront.png"
-summary: "A custom Raspberry Pi Pico PCB integrating joystick, SPI TFT display, and button input with schematic capture, custom footprints, PCB layout, grounding strategy, and fabrication preparation."
+summary: "A redesigned Raspberry Pi Pico board evolving into a handheld multi-game console: SD-backed game library with launcher UI, 3.2\" ILI9341 touch display, BQ24075 battery charging, haptic feedback, power switch, and extra buttons."
 ---
 
-Designed and laid out a two-layer custom PCB around the Raspberry Pi Pico that passed full ERC/DRC validation and is ready for fabrication, integrating a joystick, SPI TFT display, and button input into a single compact embedded platform. This mirrors the schematic-to-fabrication workflow used in production PCB design roles: hardware selection, pin mapping, schematic capture, custom footprint creation, layout, grounding strategy, and fab-file preparation, done end-to-end rather than on a breadboard.
+After a physical setback during first assembly pulled solder pads off the original board, the project was redesigned from scratch, and the scope grew. Revision 2 is a two-layer custom PCB around the Raspberry Pi Pico built as a **handheld game console**, not a single game: it adds battery-powered operation with a **BQ24075 Li-ion charger**, a **vibration motor** for haptic feedback, a **slide power switch**, and **three additional buttons**, and the software story is now a **multi-game launcher** that loads games from a microSD card. The board runs an integrated schematic-to-fabrication workflow: hardware selection, pin mapping, schematic capture, custom footprint creation, layout, grounding strategy, and fab-file preparation.
 
 <div className="my-6 flex flex-wrap gap-2">
-  {["PCB Design", "KiCad", "SPI", "ADC", "Schematic Capture", "ERC/DRC", "Custom Footprints", "Power & Grounding"].map((skill) => (
+  {["PCB Design", "KiCad", "Battery Charging", "BQ24075", "Power Management", "SD Card", "Game Launcher", "ILI9341", "SPI", "ADC", "ERC/DRC", "Custom Footprints"].map((skill) => (
     <span
       key={skill}
       className="rounded-full border border-[#22364d] bg-[#132235] px-3 py-1 text-xs font-medium text-[#b8c2cf]"
@@ -32,11 +35,11 @@ Designed and laid out a two-layer custom PCB around the Raspberry Pi Pico that p
   <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
     <img
       src="/PongSchematic.png"
-      alt="KiCad schematic for Raspberry Pi Pico custom PCB controller"
+      alt="KiCad schematic for Raspberry Pi Pico custom PCB controller revision 2"
       className="h-auto w-full"
     />
     <div className="p-4 text-sm text-[#b8c2cf]">
-      Schematic capture and signal mapping in KiCad
+      Revision 2 schematic: BQ24075 charging circuit, Pico, joystick, display, buttons, buzzer, and vibration motor
     </div>
   </div>
 
@@ -44,22 +47,46 @@ Designed and laid out a two-layer custom PCB around the Raspberry Pi Pico that p
     <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
       <img
         src="/PongPCBFront.png"
-        alt="Front PCB layout for Raspberry Pi Pico custom controller board"
+        alt="Front PCB layout for Raspberry Pi Pico custom controller board revision 2"
         className="h-auto w-full"
       />
       <div className="p-4 text-sm text-[#b8c2cf]">
-        Front-side PCB layout with joystick, display, and button placement
+        Front-side PCB layout with display, joystick, buttons, charging circuitry, and the coin motor in the top-left blank area
       </div>
     </div>
 
     <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
       <img
         src="/PongPCBBack.png"
-        alt="Back PCB layout for Raspberry Pi Pico custom controller board"
+        alt="Back PCB layout for Raspberry Pi Pico custom controller board revision 2"
         className="h-auto w-full"
       />
       <div className="p-4 text-sm text-[#b8c2cf]">
-        Back-side PCB layout with Raspberry Pi Pico placement and routing
+        Back-side PCB layout with Raspberry Pi Pico; the Li-ion battery mounts on the back
+      </div>
+    </div>
+  </div>
+
+  <div className="grid gap-6 md:grid-cols-2">
+    <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
+      <img
+        src="/PongPCB3DFront.png"
+        alt="Front 3D render of Raspberry Pi Pico custom controller board revision 2"
+        className="h-auto w-full"
+      />
+      <div className="p-4 text-sm text-[#b8c2cf]">
+        Front 3D view showing component placement and board stackup
+      </div>
+    </div>
+
+    <div className="overflow-hidden rounded-2xl border border-[#22364d] bg-[#132235]">
+      <img
+        src="/PongPCB3DBack.png"
+        alt="Back 3D render of Raspberry Pi Pico custom controller board revision 2"
+        className="h-auto w-full"
+      />
+      <div className="p-4 text-sm text-[#b8c2cf]">
+        Back 3D view with Raspberry Pi Pico; the Li-ion battery mounts on the back
       </div>
     </div>
   </div>
@@ -68,96 +95,135 @@ Designed and laid out a two-layer custom PCB around the Raspberry Pi Pico that p
 ## Objectives
 
 - Integrate multiple input/output peripherals into a single embedded hardware platform
+- Add self-contained operation through battery charging and power management
+- Turn the build into a handheld **multi-game console** rather than a single Pong game
+- Load and manage a library of games from a microSD card with a clean launcher UI
 - Create a manufacturable custom PCB rather than relying on breadboard wiring
-- Design with future enclosure integration in mind
+- Redesign the board to correct the issues that caused the first assembly to fail
 - Validate the design through electrical rule checks and PCB design rule checks
 
 ## System Architecture
 
-The PCB was built around the Raspberry Pi Pico as the main microcontroller platform. Peripheral devices included:
+The PCB is built around the Raspberry Pi Pico as the main microcontroller platform. Revision 2 peripherals include:
 
-- 5-pin analog joystick module
-- 8-pin SPI TFT LCD
-- 4-pin tactile pushbutton
-- Power decoupling capacitors
+- 5-pin analog joystick module (with center push switch)
+- 3.2" 18-pin SPI TFT display module (**ILI9341**) with touchscreen functionality (**XPT2046**) and an onboard SD card slot
+- 32 GB microSD card (via a regular SD adapter) used with the display's SD slot
+- 4 tactile pushbuttons
+- Piezo buzzer driven through an N-MOSFET
+- Coin-form vibration motor for haptic feedback, driven through an N-MOSFET
+- 3.7 V Li-ion cell with a **BQ24075RGT** single-cell charging IC
+- SPDT slide switch for power on/off
+- Polyfuse overcurrent protection and decoupling capacitors
 
-The design used the Pico's 3.3 V regulated output to power the joystick and display module, while analog joystick outputs were routed to the Pico's ADC pins and the display was interfaced over SPI.
+The design uses the Pico's 3.3 V regulated rail to power the logic and low-current peripherals, while the joystick's analog outputs route to the Pico's ADC pins, the display is interfaced over SPI, and the new buttons join the joystick switch as digital GPIO inputs. The motor's MOSFET switch keeps the higher-current haptic load isolated from the logic supply. The display's SPI bus also carries its touch (XPT2046) and SD-card lines, and while the charging circuitry sits on the front of the board, the Li-ion battery itself is mounted on the back.
+
+## Game Library and Launcher
+
+The software goal is a small handheld console: the microSD card holds a library of games, and the device boots into a launcher that enumerates them through a filepath structure rather than hard-coding a single title. The planned layout:
+
+- `/games/` at the SD root, with one folder per game (e.g. `/games/pong/`, `/games/snake/`, `/games/breakout/`)
+- each game folder carries a small metadata file (title, author, and version) plus its assets and code
+- the launcher scans `/games/`, renders the titles as a menu on the ILI9341, and lets the joystick/buttons navigate and confirm a selection
+- Pong ships first as the flagship title, with the menu/game state machine and AI from the original firmware refactored into this framework
+
+Keeping games as separate SD folders means new titles can be dropped onto the card without reflashing the firmware.
 
 ## Key Technical Work
 
 ### 1. Hardware Interface Definition
 
-Mapped and validated signal assignments between the Pico and external modules, including:
+Mapped and validated signal assignments between the Pico and every external module:
 
 - analog joystick axes to ADC-capable GPIOs
-- joystick switch and external button to digital GPIO inputs
-- SPI display clock, data, chip select, reset, and data/command lines to appropriate GPIO pins
+- joystick switch and all four tactile buttons to digital GPIO inputs
+- SPI display clock, data, chip select, reset, and data/command lines to appropriate GPIO pins, with the display's touch (XPT2046) and SD-card lines riding alongside the same SPI bus
+- buzzer and vibration motor PWM outputs routed to MOSFET gate drivers, with a flyback diode across the motor to clamp the inductive spike when Q2 switches off
+- charging and power-management signals from the BQ24075
+
+Because the Pico sits on the back while everything else lives on the front, most SPI signals route through vias. Signal integrity is handled in code rather than with added hardware: GPIO drive strength is kept at 2-4 mA (default rather than boosting to 8/12 mA) to soften edge rates and avoid ringing across via jumps, the SPI clock stays at or below 25 MHz, and traces take the shortest direct path between Pico pins and each peripheral.
 
 A key design decision was distinguishing between SPI TFT labeling and I2C conventions, since the display's SCL and SDA pins represented SPI clock and MOSI, not I2C lines.
 
-### 2. Schematic Capture and Electrical Validation
+### 2. Battery Charging and Power Management
 
-Created the full schematic in KiCad and resolved early issues involving:
+Added a self-contained power path around the **BQ24075RGT**, a linear single-cell Li-ion/Li-Poly charger with system power-path management:
+
+- 500 mAh 3.7 V cell with a polyfuse (750 mA hold) for overcurrent protection
+- ISET resistor (R2 = 3.9 kΩ) sets the charge current: 890 A·Ω ÷ 3900 Ω ≈ **228 mA**, so a full charge takes ~2.19 hours
+- ILIM resistor (R4 = 2.7 kΩ) caps USB input current at 1550 A·Ω ÷ 2700 Ω ≈ **574 mA**
+- D1 series diode in the power path
+- system rail provides power to the board logic, so the device can charge and run from a single cell
+- filled copper zones taper the wide power traces down to the narrower BQ24075 pins, since KiCad has no built-in way to step trace widths without a plugin
+
+The charger section was placed and routed with thermal relief in mind, since linear charging can dissipate noticeable heat at the IC. A right-angle slider switch (**MSS 3111**, rated 1 A AC / 3 A DC) sits in series between the BQ24075 OUT pin and Vsys, able to poke out the top of the enclosure and comfortably carry the board's 300-400 mA draw.
+
+The system's worst-case current is about **240 mA** with everything active at once (RP2040 + display/backlight + busy SD card + touch/joystick + motor + buzzer), which stays under the Pico's 3.3 V regulator limit of 300 mA.
+
+### 3. Schematic Capture and Electrical Validation
+
+Built the full Revision 2 schematic in KiCad and resolved issues including:
 
 - unused and intentionally unconnected pins
-- power net naming consistency
-- correct use of pull-up logic for button inputs
-- proper power distribution from the Pico's 3.3 V rail
+- power net naming consistency across the new battery and charging nets
+- correct pull-up logic for button inputs
+- proper distribution of the 3.3 V rail and the battery/charging rail
 
 Electrical Rule Check (ERC) was used to identify and resolve connection and net-labeling issues before layout.
 
-### 3. Custom Footprint Development
+### 4. Custom Footprint Development
 
-Developed custom PCB footprints for the joystick and TFT modules based on measured pin geometry and standard through-hole spacing. This included:
+Developed and updated custom PCB footprints for the non-standard modules based on measured pin geometry, including the joystick, the TFT display, and the slide switch (the vibration motor rode along on its datasheet footprint):
 
 - defining pad sizes and drill diameters
 - setting correct pad pitch
 - marking pin 1 orientation clearly
 - verifying footprint pad numbering against schematic symbol pin numbering
 
-This was a critical part of the project because module-level hardware often lacks standardized footprints.
+This remained a critical part of the project because module-level hardware often lacks standardized footprints.
 
-### 4. PCB Layout and Layer Planning
+### 5. PCB Layout and Layer Planning
 
-Designed a two-layer PCB in KiCad with:
+Designed a two-layer PCB in KiCad. The board grew significantly for Revision 2 to fit the added power-management and haptic components, measuring roughly 19.5 cm × 9.1 cm, with:
 
 - Raspberry Pi Pico placed on the back side
-- display, joystick, and button placed on the front side
+- battery charging circuitry (BQ24075, polyfuse, and support parts) placed on the front side, with the Li-ion battery itself attaching to the back
+- coin vibration motor placed in the blank area at the top left of the front side
+- display, joystick, buttons, and switch placed on the front side
 
-This layout supported both compact routing and future enclosure integration. Mechanical considerations included display window alignment, joystick access clearance, button accessibility through an enclosure plunger concept, and USB cable keep-out for the Pico.
+The layout keeps the higher-current charger and motor paths separate from sensitive analog and SPI routing, and because the Pico is on the back, every front-side signal that talks to it jumps through vias; the design ended up via-heavy by necessity. Mechanical considerations include display window alignment, joystick access clearance, button accessibility, switch placement, and USB keep-out for the Pico.
 
-### 5. Power and Grounding Strategy
+### 6. Power and Grounding Strategy
 
-Implemented a practical power-distribution strategy using:
+Implemented a practical power-distribution strategy supporting both the logic load and the battery/charging path:
 
-- 0.5 mm traces for 3.3 V power routing
-- 0.25 mm traces for signal routing
+- power traces sized for the charging and motor currents where needed
+- signal routing kept small
 - front and back copper pours for the ground network
 
 A key lesson from the layout phase was that shared net names alone do not guarantee physical connectivity between copper zones; plated through connections such as vias or through-hole pads are required to join front and back ground zones.
 
-### 6. Design Rule Check Resolution
+### 7. Design Rule Check Resolution
 
-Ran PCB Design Rule Check (DRC) and resolved issues spanning six categories: unconnected track stubs, board-edge clearance violations, silkscreen overlap with the board edge, incomplete thermal relief connections, missing connectivity between front and back ground zones, and local ground-zone access issues around specific pads. Working through each category end-to-end improved both manufacturability and confidence in the final layout.
+Ran PCB Design Rule Check (DRC) on the new layout and resolved issues spanning unconnected track stubs, board-edge clearance violations, silkscreen overlap with the board edge, thermal relief connections, and connectivity between the front and back ground zones. Working through each category improved both manufacturability and confidence in the redesigned board.
 
 ## Tools and Methods
 
-- KiCad for schematic capture, footprint creation, PCB layout, DRC, and fabrication outputs
+- KiCad for schematic capture, footprint creation, PCB layout, ERC/DRC, and fabrication outputs
 - Manual pinout verification and footprint measurement
 - Gerber and drill file generation for manufacturing preparation
 
 ## Challenges and Lessons Learned
 
-Bringing the board up in hardware surfaced problems that never show up in simulation or layout review. During assembly, excessive heat, pressure, and  repeated rework pulled solder pads off the board, lifting copper from the substrate and damaging the underlying traces. This forced a restart of the soldering process on a fresh board and led to ordering replacement Raspberry Pi Pico units after the originals were damaged during rework attempts.
-
-This reinforced a few practical lessons: use lower iron temperatures, apply less physical pressure to the pads, and avoid repeated reheating of the same pad It also highlighted the value of ordering spare components ahead of assembly rather than treating a single unit as sufficient for a first physical build.
+Bringing the original board up in hardware surfaced problems that never show up in simulation or layout review. During assembly, excessive heat, pressure, and repeated rework pulled solder pads off the board, lifting copper from the substrate and damaging the underlying traces. That failure forced a restart on a fresh board and directly drove the Revision 2 redesign: lower iron temperatures, less physical pressure, and avoiding reheating the same pad. It also highlighted the value of ordering spare components ahead of assembly rather than treating a single unit as sufficient for a first physical build.
 
 ## What's Left to Do
 
-- **Soldering**: re-populate the board on a fresh PCB using revised technique (lower iron temperature, shorter dwell time) to avoid further pad lift
-- **Enclosure CAD**: design and model a 3D-printable enclosure in Fusion 360, accounting for the display window, joystick clearance, and button plunger identified during layout
-- **Game code**: write the embedded MicroPython firmware for the Pong game logic, including joystick input handling, collision detection, and SPI-driven rendering to the TFT display
+- **Soldering**: re-populate the Revision 2 board using the revised technique (lower iron temperature, shorter dwell time) to avoid pad lift
+- **Firmware**: extend the MicroPython firmware to the console model: boot into a launcher that scans `/games/` on the SD card, render a scrollable game menu on the ILI9341, and hand control to the selected game. Pong becomes the first title, refactoring the existing menu/game/AI state machine and porting rendering from the OLED prototype to the 3.2" display over the via-heavy SPI bus
+- **Game library**: define the `/games/` file structure and per-game metadata (title, author, version), then verify the launcher loads a second game end to end
+- **Enclosure CAD**: design and model a 3D-printable enclosure accounting for the display window, joystick clearance, button and switch placement, the vibration motor, and the slide switch poking out the top
 
 ## Outcome
 
-Produced a near-fabrication-ready custom PCB design that integrates user input, analog sensing, and display output into a compact embedded platform, demonstrating practical skills in embedded hardware design, schematic capture, custom footprint generation, PCB layout, grounding and power distribution, design-for-manufacture thinking, and iterative debugging using ERC/DRC workflows.
+Produced a fully redesigned, near-fabrication-ready custom PCB that moves the build from breadboard to a manufactured platform, integrating input, analog sensing, display output, battery charging, and haptic feedback into one board, now positioned as the hardware for a palmtop game console with an SD-backed game library. The revision demonstrates embedded hardware design, power management, schematic capture, custom footprint generation, PCB layout, grounding and power distribution, signal-integrity-aware routing, and iterative ERC/DRC debugging.
